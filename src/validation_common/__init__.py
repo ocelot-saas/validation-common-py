@@ -1,6 +1,5 @@
 """Common entities and their validation."""
 
-import jsonschema
 import validation
 
 
