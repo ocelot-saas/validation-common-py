@@ -22,5 +22,3 @@ class AddressValidator(validation.Validator):
             raise Error('Address is too long')
 
         return address
-
-
