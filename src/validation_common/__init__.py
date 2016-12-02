@@ -1,6 +1,7 @@
 """Common entities and their validation."""
 
 import validation
+import slugify
 
 
 class IdValidator(validation.Validator):
@@ -110,3 +111,93 @@ class ImageSetValidator(validation.Validator):
             image_set.append(image)
 
         return image_set
+
+
+class KeywordsValidator(validation.Validator):
+    """Validator for a keywords set."""
+
+    SCHEMA = {
+        '$schema': 'http://json-schema.org/draft-04/schema#',
+        'title': 'Keywords',
+        'description': 'A set of keywords',
+        'type': 'array',
+        'items': {
+            'type': 'string',
+        },
+        'additionalItems': False
+    }
+
+    MAX_KEYWORD_SIZE = 128
+    MAX_KEYWORDS = 64
+
+    def _post_schema_validate(self, keywords_raw):
+        keywords_unsorted = [kw.strip() for kw in keywords_raw]
+
+        if any(kw == '' for kw in keywords_unsorted):
+            raise validation.Error('Keyword is empty')
+
+        for kw in keywords_unsorted:
+            if len(kw) >= self.MAX_KEYWORD_SIZE:
+                raise validation.Error('Keyword "{}" is too long'.format(kw))
+
+        keywords = sorted(set(keywords_unsorted))
+
+        if len(keywords) >= MAX_KEYWORDS:
+            raise validation.Error('Too many keywords')
+
+        return keywords
+
+
+class AddressValidator(validation.Validator):
+    """Validator for an address."""
+
+    SCHEMA = {
+        '$schema': 'http://json-schema.org/draft-04/schema#',
+        'title': 'Address',
+        'description': 'An address',
+        'type': 'string'
+    }
+
+    MAX_ADDRESS_SIZE = 128
+
+    def _post_schema_validate(self, address_raw):
+        address = address_raw.strip()
+
+        if len(address) >= self.MAX_ADDRESS_SIZE:
+            raise Error('Address is too long')
+
+        return address
+
+
+class HostToSubdomainValidator(validation.Validator):
+    """Validator for the host header which produces the subdomain part."""
+
+    SCHEMA = {
+        '$schema': 'http://json-schema.org/draft-04/schema#',
+        'title': 'Host Header',
+        'description': 'An host header value',
+        'type': 'string'
+    }
+
+    MAX_DOMAIN_SIZE = 128
+
+    def __init__(self, master_domain):
+        self._subdomain_re = re.compile(r'^([^.]+)[.]{}$'.format(master_domain))
+        pass
+
+    def _post_schema_validate(self, host):
+        match = self.SUBDOMAIN_RE.match(host)
+
+        if match is None:
+            raise validation.Error('Host "{}" is not a valid domain'.format(host))
+
+        subdomain = match.group(1)
+
+        if len(subdomain) >= self.MAX_DOMAIN_SIZE:
+            raise validation.Error('Subdomain "{}" is too long'.format(subdomain))
+
+        if not subdomain == slugify.slugify(subdomain):
+            raise validation.Error('Subdomain "{}" is not valid'.format(subdomain))
+
+        return subdomain
+    

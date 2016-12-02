@@ -2,6 +2,7 @@
 --extra-index-url https://pypi.fury.io/vsRAKKMwEs5p1RhfMGiF/ocelot-saas/
 
 # Duplicated from setup.py.
+python-slugify>=1,<2
 validation-py==0.0.3
 
 # Duplicated from setup.py, for testing.

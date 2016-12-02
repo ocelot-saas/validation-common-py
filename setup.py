@@ -16,7 +16,7 @@ def readme():
 
 setup(
     name='validation-common-py',
-    version='0.0.1',
+    version='0.0.2',
     description='Common entity validators.',
     long_description=readme(),
     keywords='validation common',
@@ -28,6 +28,7 @@ setup(
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
     install_requires=[
+        'python-slugify>=1,<2',
         'validation-py==0.0.3',
     ],
     test_suite='tests',
