@@ -16,7 +16,7 @@ def readme():
 
 setup(
     name='validation-common-py',
-    version='0.1.0',
+    version='0.1.1',
     description='Common entity validators.',
     long_description=readme(),
     keywords='validation common',
