@@ -22,7 +22,7 @@ class URLValidator(validation.Validator):
         try:
             url_obj = urlparse.urlparse(url_raw)
 
-            if url_obj.scheme not in self.ALLOWED_SCHEMS:
+            if url_obj.scheme not in self.ALLOWED_SCHEMES:
                 raise validation.Error('Invalid scheme "{scheme}"'.format(scheme=url_obj.scheme))
 
             return url_obj.geturl()
