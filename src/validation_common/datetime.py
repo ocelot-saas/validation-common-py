@@ -15,4 +15,4 @@ class DateTimeTsValidator(validation.Validator):
     }
 
     def _post_schema_validate(self, datetime_ts_raw):
-        return datetime_ts
+        return datetime_ts_raw
